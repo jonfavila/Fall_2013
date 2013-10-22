@@ -1,0 +1,202 @@
+/** 
+ * This class creates a PolyTruck and fills it with shapes of the user's choosing,
+ * Then computes the total value of the truck.
+ * @author Jonathan Avila
+ * @version 2.0
+ */
+ 
+import java.util.Scanner;
+import java.util.Random;
+import java.text.NumberFormat;
+
+public class PolyDriver{
+
+	public static void main(String[] args){
+		Scanner in = new Scanner(System.in);
+		System.out.println("Let's load the truck.");
+		int userIn = -1;
+		PolyTruck truck = new PolyTruck();
+		do{
+			System.out.println("What would you like to load?");
+			System.out.println();
+			System.out.println("1 : Default Rectangle");
+			System.out.println("2 : Custom Rectangle");
+			System.out.println("3 : Default Square");
+			System.out.println("4 : Custom Square");
+			System.out.println("5 : Default Triangle");
+			System.out.println("6 : Custom Triangle");
+			System.out.println("7 : Default Trapezoid");
+			System.out.println("8 : Custom Trapezoid");
+			System.out.println("9 : Default Circle");
+			System.out.println("10: Custom Circle");
+			System.out.println("11: Quit");
+			System.out.println("What would you like to do?: ");
+			userIn = in.nextInt();
+			while(!checkValidity(userIn)){
+				System.out.print("Please input 1-11: ");
+				userIn = in.nextInt();
+			} //small while loop to get user to provide valid input 
+			
+					
+			switch(userIn){
+				case 1:		truck.addPoly(new Rectangle());
+							break;
+				case 2:		truck.addPoly(custRec());
+							break;
+				case 3:		truck.addPoly(new Square());
+							break;
+				case 4:		truck.addPoly(custSqr());
+							break;
+				case 5: 	truck.addPoly(new Triangle());
+							break;
+				case 6:		truck.addPoly(custTri());
+							break;
+				case 7: 	truck.addPoly(new Trapezoid());
+							break;
+				case 8:		truck.addPoly(custTrp());
+							break;
+				case 9: 	truck.addPoly(new Circle());
+							break;
+				case 10:	truck.addPoly(custCir());
+							break;
+			} //end switch statement
+			System.out.println("\n" + truck);
+		} while (userIn != 11 && !truck.isFull());
+		
+		findDemand();
+		NumberFormat formatter = NumberFormat.getCurrencyInstance();
+		System.out.println("The truck arrived.");
+		System.out.println(truck);
+		System.out.println();
+		System.out.println("The truck made a total of: " + formatter.format(truck.getTotal()));
+	}
+	
+	/*
+	 *	Checks validity of user input when selecting from the menu.
+	 *
+	 *	@param num: the input from the user.
+	 *  @return false if invalid input, true otherwise
+	 */
+	private static boolean checkValidity(int num){
+		if(num < 1 || num > 11)
+			return false;
+		else 
+			return true;
+	}
+	
+	/*
+	 *	Generates a custom Rectangle with user-defined id and dimensions.
+	 *
+	 *	@return a new Rectangle defined by the user.
+	 */
+	private static Rectangle custRec(){
+		Scanner in = new Scanner(System.in);
+		System.out.print("---Input ID: ");
+		String id = in.nextLine();
+		System.out.print("---Input Width: ");
+		double wid = in.nextDouble();
+		System.out.print("---Input Length: ");
+		double len = in.nextDouble();
+		return new Rectangle(id, len, wid);
+	}
+	
+	/*
+	 *	Generates a custom Square with user-defined id and dimensions.
+	 *
+	 *	@return a new Square defined by the user.
+	 */
+	private static Square custSqr(){
+		Scanner in = new Scanner(System.in);
+		System.out.print("---Input ID: ");
+		String id = in.nextLine();
+		System.out.print("---Input Side Length: ");
+		double side = in.nextDouble();
+		return new Square(id, side);
+	}
+	
+	/*
+	 *	Generates a custom Triangle with user-defined id and dimensions.
+	 *
+	 *	@return a new Triangle defined by the user.
+	 */
+	private static Triangle custTri(){
+		Scanner in = new Scanner(System.in);
+		System.out.print("---Input ID: ");
+		String id = in.nextLine();
+		System.out.print("---Input Base: ");
+		double base = in.nextDouble();
+		System.out.print("---Input Height: ");
+		double height = in.nextDouble();
+		return new Triangle(id, base, height);
+	}
+	
+	/*
+	 *	Generates a custom Trapezoid with user-defined id and dimensions.
+	 *
+	 *	@return a new Trapezoid defined by the user.
+	 */
+	private static Trapezoid custTrp(){
+		Scanner in = new Scanner(System.in);
+		System.out.print("---Input ID: ");
+		String id = in.nextLine();
+		System.out.print("---Input Base 1: ");
+		double b1 = in.nextDouble();
+		System.out.print("---Input Base 2: ");
+		double b2 = in.nextDouble();
+		System.out.print("---Input Height: ");
+		double height = in.nextDouble();
+		return new Trapezoid(id, b1, b2, height);
+	}
+	
+	/*
+	 *	Generates a custom Circle with user-defined id and dimensions.
+	 *
+	 *	@return a new Circle defined by the user.
+	 */
+	private static Circle custCir(){
+		Scanner in = new Scanner(System.in);
+		System.out.print("---Input ID: ");
+		String id = in.nextLine();
+		System.out.print("---Input Radius: ");
+		double rad = in.nextDouble();
+		return new Circle(id, rad);
+	}
+	
+	/*
+	 *	Randomly chooses one of the four categories of shapes to be in demand.
+	 */
+	private static void findDemand(){
+		
+		Random rand = new Random();
+		int polyType = rand.nextInt(3);
+		switch(polyType){
+			case 0:		Rectangle.changeDemand(true);
+						Triangle.changeDemand(false);
+						Trapezoid.changeDemand(false);
+						Circle.changeDemand(false);
+						System.out.println("Rectangles are in demand.");
+						break;
+			case 1:		Rectangle.changeDemand(false);
+						Triangle.changeDemand(true);
+						Trapezoid.changeDemand(false);
+						Circle.changeDemand(false);
+						System.out.println("Triangles are in demand.");
+						break;
+			case 2:		Rectangle.changeDemand(false);
+						Triangle.changeDemand(false);
+						Trapezoid.changeDemand(true);
+						Circle.changeDemand(false);
+						System.out.println("Trapezoids are in demand.");
+						break;
+			case 3:		Rectangle.changeDemand(false);
+						Triangle.changeDemand(false);
+						Trapezoid.changeDemand(false);
+						Circle.changeDemand(true);
+						System.out.println("Circles are in demand.");
+						break;
+		}
+			
+	}
+	
+
+}
