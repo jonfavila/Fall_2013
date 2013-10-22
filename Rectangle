@@ -1,0 +1,69 @@
+/** 
+ * This class extends Polygon to represent a rectangle.
+ *
+ * @author Jonathan Avila
+ * @version 1.5
+ */
+
+public class Rectangle extends Polygon{
+
+	protected double len, wid; 
+	protected static boolean inDemand;
+	/*
+	 *	Constructor for rectangle. Sets id, length, and width.
+	 *
+	 *	@param id: the rectangle's id. len: the length. wid: the width.
+	 */
+	public Rectangle(String id, double len, double wid){
+		super(id);
+		this.len = len;
+		this.wid = wid;
+	}
+	
+	/*
+	 *	Arg-free constructor, provides default id and dimensions.
+	 */	
+	public Rectangle(){
+		this("No ID", 5.0, 10.0);
+	}
+	
+	/*
+	 *	Finds the area of the rectangle.
+	 *
+	 *	@return The area of the rectangle. 
+	 */	
+	public double getArea(){
+		return len * wid;
+	}
+	
+	/*
+	 *	Finds the overall cost of the rectangle.
+	 *
+	 *	@return The area if not in demand, twice area if in demand.
+	 */
+	public double getTotal(){
+		if(inDemand)
+			return 2.0 * this.getArea();
+		else 
+			return this.getArea();
+	}
+	
+	/*
+	 *	Generates string representation of rectangle.
+	 *
+	 * 	@return A formatted string giving the id and dimensions.
+	 */
+	
+	@Override public String toString(){
+		return len + " by " + wid + " Rectangle with id = " + id;
+	}
+	
+	/*
+	 *	Changes the inDemand of the rectangle to status.
+	 *
+	 * 	@param status whether or not the rectangle is in demand.
+	 */
+	public static void changeDemand(boolean status){
+		inDemand = status;
+	}
+}
