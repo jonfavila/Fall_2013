@@ -1,0 +1,176 @@
+/**
+ * ImageProcessor is a set of various methods used to edit a given image
+ * from the command line.
+ * @author Jonathan Avila
+ * @version 1.1
+ */
+
+public class ImageProcessor{
+
+	private Pic pic;
+	private Pixel[][] pixels;
+	
+	/*
+	 * Constructor for class ImageProcessor, makes a copy of the desired picture.
+	 * @param Pic
+	 */
+		
+	private ImageProcessor(Pic pic){
+		this.pic = pic.deepCopy();
+	}
+	
+	/*
+	 * main. Takes picture from command line and performs various methods.
+	 * @parm arguments from command line. Two pictures, two ints representing a location
+	 * @return void
+	 */
+
+	public static void main(String[] args){
+		ImageProcessor img = new ImageProcessor(new Pic(args[0]));
+		img.grayscale().show();
+		img.invert().show();
+		img.watermark(new Pic(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3])).show();
+		img.onlyRed().show();
+		img.onlyBlue().show();
+		img.onlyGreen().show();
+		img.maximize().show();
+	}
+	
+	/*
+	 * grayscale averages the RBG values at each pixel and then sets each value 
+	 * to that average.
+	 * @return a copied picture in grayscale
+	 */
+	
+	private Pic grayscale(){
+		Pic returnPic = pic.deepCopy();
+		for(int row = 0; row < returnPic.getWidth(); row++){
+			for(int col = 0; col < returnPic.getHeight(); col++){
+				Pixel cur = returnPic.getPixel(row, col);
+				cur.setRed((cur.getRed() + cur.getBlue() + cur.getGreen()) / 3);
+				cur.setBlue((cur.getRed() + cur.getBlue() + cur.getGreen()) / 3);
+				cur.setGreen((cur.getRed() + cur.getBlue() + cur.getGreen()) / 3);
+			}
+		}
+		return returnPic;
+	}
+	
+	/*
+	 * invert copies and alters the copy by subtracting each RGB value from 255
+	 * and then using that value at each pixel.
+	 * @return a copy of the original with inverted colors
+	 */
+	
+	private Pic invert(){
+		Pic returnPic = pic.deepCopy();
+		for(int row = 0; row < returnPic.getWidth(); row++){
+			for(int col = 0; col < returnPic.getHeight(); col++){
+				Pixel cur = returnPic.getPixel(row, col);
+				cur.setRed(255 - cur.getRed());
+				cur.setBlue(255 - cur.getBlue());
+				cur.setGreen(255 - cur.getGreen());
+			}
+		}	
+		return returnPic;
+	}
+	
+	/*
+	 * watermark overlays one image on another and averages their RGB values
+	 * to create a transparency effect.  Starts at a position x, y on the 
+	 * copy of the original image.
+	 * @params a second picture, two ints representing a start position
+	 * @return a copy of the original with a translucent second picture overlaid 
+	 *		   at some position
+	 */
+	
+	private Pic watermark(Pic pic2, int x, int y){
+		Pic returnPic = pic.deepCopy();
+		for(int row = 0; row < pic2.getWidth(); row++){
+			for(int col = 0; col < pic2.getHeight(); col++){
+				Pixel cur = returnPic.getPixel(x + row, y + col);
+				Pixel cur2 = pic2.getPixel(row, col);
+				cur.setRed((cur.getRed() + cur2.getRed()) / 2);
+				cur.setBlue((cur.getBlue() + cur2.getBlue()) / 2);
+				cur.setGreen((cur.getGreen() + cur2.getGreen()) / 2);
+			}
+		}		
+		return returnPic;
+	}
+	
+	/*
+	 * onlyRed causes only red channels to be used in the copy
+	 * @return a copy of the original in red
+	 */
+	
+	private Pic onlyRed(){
+		Pic returnPic = pic.deepCopy();
+		for(int row = 0; row < returnPic.getWidth(); row++){
+			for(int col = 0; col < returnPic.getHeight(); col++){
+				Pixel cur = returnPic.getPixel(row, col);
+				cur.setBlue(0);
+				cur.setGreen(0);
+			}
+		}		
+		return returnPic;
+	}
+	
+	/*
+	 * onlyBlue causes only blue channels to be used in the copy
+	 * @return a copy of the original in blue
+	 */
+	 
+	private Pic onlyBlue(){
+		Pic returnPic = pic.deepCopy();
+		for(int row = 0; row < returnPic.getWidth(); row++){
+			for(int col = 0; col < returnPic.getHeight(); col++){
+				Pixel cur = returnPic.getPixel(row, col);
+				cur.setRed(0);
+				cur.setGreen(0);
+			}
+		}		
+		return returnPic;
+	}
+	
+	/*
+	 * onlyGreen causes only green channels to be used in the copy
+	 * @return a copy of the original in green
+	 */
+	 
+	private Pic onlyGreen(){
+		Pic returnPic = pic.deepCopy();
+		for(int row = 0; row < returnPic.getWidth(); row++){
+			for(int col = 0; col < returnPic.getHeight(); col++){
+				Pixel cur = returnPic.getPixel(row, col);
+				cur.setRed(0);
+				cur.setBlue(0);
+			}
+		}		
+		return returnPic;
+	}
+	
+	/*
+	 * maximize sets each channel for each pixel to the max of red, green, or blue
+	 * @return a copy of the original that looks very, very strange. 
+	 *         sections colored based on which of the 3 channels is highest
+	 */
+	
+	private Pic maximize(){
+		Pic returnPic = pic.deepCopy();
+		for(int row = 0; row < returnPic.getWidth(); row++){
+			for(int col = 0; col < returnPic.getHeight(); col++){
+				Pixel cur = returnPic.getPixel(row, col);
+				if(cur.getRed() > cur.getBlue() && cur.getRed() > cur.getGreen()){
+					cur.setBlue(0);
+					cur.setGreen(0);
+				} else if(cur.getBlue() > cur.getRed() && cur.getBlue() > cur.getGreen()){
+					cur.setRed(0);
+					cur.setGreen(0);
+				} else {
+					cur.setRed(0);
+					cur.setBlue(0);
+				}
+			}
+		}		
+		return returnPic;
+	}
+}
